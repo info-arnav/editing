@@ -8,13 +8,16 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
+const pino = require("express-pino-logger")();
+const { videoToken } = require("./tokens");
+const config = require("./config");
 
 //*imports
 
 //*ports
-const applicationParams = "http://localhost:5000/";
-const serverPort = process.env.PORT || "1234";
-const serverParams = "http://localhost:1234";
+const applicationParams = "http://localhost:3001/";
+const serverPort = process.env.PORT || "3001";
+const serverParams = "http://localhost:3001";
 const mongoosePort = process.env.MONGODB_URI || "mongodb://localhost/videocall";
 
 //*creation
@@ -26,10 +29,19 @@ app.listen(serverPort, (req, res) => {});
 
 //*use
 app.use(cors());
+app.use(pino);
 app.use(express.static(path.join(__dirname, "build")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(fileupload());
+const sendTokenResponse = (token, res) => {
+  res.set("Content-Type", "application/json");
+  res.send(
+    JSON.stringify({
+      token: token.toJwt(),
+    })
+  );
+};
 
 //*Schemas
 const userDatas = new mongoose.Schema({
@@ -75,11 +87,11 @@ const login = { error: "" };
 
 //*routes
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "path", "index.html"));
 });
 
 app.get("/index", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.redirect("/");
 });
 
 //registeration of a user is done here
@@ -314,4 +326,25 @@ app.get("/privacy", (req, res) => {
       res.send(data.private[data.private.length - 1]);
     }
   });
+});
+
+// video
+
+app.get("/api/greeting", (req, res) => {
+  const name = req.query.name || "World";
+  res.setHeader("Content-Type", "application/json");
+  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+});
+
+app.get("/video/token", (req, res) => {
+  const identity = req.query.identity;
+  const room = req.query.room;
+  const token = videoToken(identity, room, config);
+  sendTokenResponse(token, res);
+});
+app.post("/video/token", (req, res) => {
+  const identity = req.body.identity;
+  const room = req.body.room;
+  const token = videoToken(identity, room, config);
+  sendTokenResponse(token, res);
 });

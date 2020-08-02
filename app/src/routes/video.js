@@ -1,8 +1,9 @@
 import React from "react";
 import "./App.css";
+import ReactDOM from "react-dom";
 import VideoChat from "./VideoChat";
 
-const App = () => {
+const Video = () => {
   return (
     <div className="app">
       <nav className="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar gradient">
@@ -25,7 +26,7 @@ const App = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="nav navbar-nav ml-auto">
               <li className="nav-item" role="presentation">
-                <a className="nav-link" href="http://localhost:5000/index">
+                <a className="nav-link" href="/index">
                   Homepg{" "}
                 </a>
               </li>
@@ -62,4 +63,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Video;

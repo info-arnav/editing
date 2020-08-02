@@ -17,6 +17,7 @@ import PrivacyPolicy from "./routes/privacyPolicy";
 import Schedule from "./routes/schedule";
 import Footer from "./routes/footer";
 import Navigator from "./routes/navigator";
+import Video from "./routes/video";
 
 function App() {
   return (
@@ -60,6 +61,9 @@ function App() {
         </Route>
         <Route path="/schedule">
           <Schedule></Schedule>
+        </Route>
+        <Route path="/videoCall">
+          <Video></Video>
         </Route>
       </BrowserRouter>
     </React.StrictMode>
